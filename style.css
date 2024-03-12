@@ -1,0 +1,37 @@
+.main-container {
+    margin: 10%;
+    outline: solid black;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+}
+
+.display-container, .key-container {
+    outline: solid red;
+    margin: 10px;
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.display-container {
+    justify-content: center;
+}
+
+.display-container div {
+    outline: solid aqua;
+    padding: 2px;
+}
+
+#answer-div {
+    align-self: flex-end;
+    font-size: 24px;
+}
+
+.key-row {
+    display: flex;
+}
+
+.key-row div {
+    flex:auto;
+}
