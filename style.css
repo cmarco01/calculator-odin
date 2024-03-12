@@ -1,16 +1,17 @@
 .main-container {
-    margin: 10%;
+    margin: 30px 40%;
     outline: solid black;
     display: flex;
     flex-direction: column;
-    width: 250px;
-    height: 400px;
+    min-width: 150px;
+    min-height: 250px;
+
 }
 
 .main-displays {
     flex: auto;
-    /* outline: solid brown;s */
-    margin: 0px 14px;
+    padding: 10px;
+    outline: solid brown;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -18,30 +19,31 @@
 
 .display-container, .key-container {
     outline: solid red;
-    /* flex: auto; */
     display: flex;
     flex-direction: column;
 }
 
 .display-container {
-    justify-content: center;
+    padding: 4px;
 }
 
-.display-container div {
-    outline: solid aqua;
-    padding: 2px;
+#op-div {
+    font-size: 18px;
+    font-style: italic;
 }
 
 #answer-div {
-    align-self: flex-end;
-    font-size: 24px;
+    display: flex;
+    justify-content: end;
+    font-size: 36px;
 }
 
 .key-container {
     background-color: lightcoral;
     flex-direction: row;
-    justify-content: center;
-    height: 300px;
+    /* justify-content: center; */
+    /* height: 300px; */
+    flex: auto;
 }
 
 .key-col {
