@@ -82,13 +82,13 @@ function testNum(arr) {
         if (typeof(digit) != "number") {
             
             nums.push(num);
-            console.log("ADDING " + num + " to list");
+            // console.log("ADDING " + num + " to list");
             num = "";
             if (validOperators.includes(digit) && operatorChosen == false) {
                 operator = digit;
                 operatorChosen = true;
             } else if (validOperators.includes(digit) && operatorChosen == true) {
-                console.log("FOUND SECOND OPERATOR! breaking for loop");
+                // console.log("FOUND SECOND OPERATOR! breaking for loop");
                 break;
             }
         } else {
@@ -98,7 +98,7 @@ function testNum(arr) {
         // using this to get the starting index to slice out the remainder of the op
         numDigits += 1;
 
-        console.log('num: ' + num);
+        // console.log('num: ' + num);
     }
 
     if (nums.includes('')) {
@@ -106,7 +106,7 @@ function testNum(arr) {
     }
 
     console.log(nums);
-    console.log("operator: " + operator);
+    // console.log("operator: " + operator);
 
     let firstNum = parseFloat(nums[0]);
     let secondNum = parseFloat(nums[1]);
@@ -122,12 +122,12 @@ function testNum(arr) {
         answer = firstNum / secondNum;
     }
 
-    console.log("ANSWER:  " + answer);
+    // console.log("ANSWER:  " + answer);
     
     remainingOp = arr.slice(numDigits);
     remainingOp.unshift(answer);
 
-    console.log("REMAINING OP: " + remainingOp);
+    // console.log("REMAINING OP: " + remainingOp);
 
 
     let finalAnswer = false;
@@ -135,14 +135,14 @@ function testNum(arr) {
     for (let i = 0; i < remainingOp.length; i++) {
         finalAnswer = true;
         if (validOperators.includes(remainingOp[i])) {
-            console.log("OP NOT COMPLETE! Running again...");
+            // console.log("OP NOT COMPLETE! Running again...");
             finalAnswer = false;
             testNum(remainingOp);          
             break;
         }
     }
     
-    if (finalAnswer = true) {
+    if (finalAnswer == true) {
         console.log("FINAL ANSWER " + answer);
         return answer;
     }
@@ -152,7 +152,8 @@ function testNum(arr) {
 
 let arr = [2, 5, "+", 1, 0, "-", 5, "/", 3, "*", 10];
 
-testNum(arr);
+// testNum(arr);
+getOperationArray(arr);
 
 /*
 ok this is a DOOZY! haha, but it works. 
@@ -167,3 +168,46 @@ all i need to do;
 -*can also modify to send operation, or do that in separate function-- for the display
 
 */
+
+
+function getOperationArray(arr) {
+    /*
+    iterate thru array
+    if digit is a number, concat to num
+    if digit is NOT a number:
+        -parseFloat num
+        -add num to opArr
+        -add operator to opArr
+    */
+
+    let opArr = [];
+    let num = "";
+    let operator = "";
+    let validOperators = ["+", "-", "/", "*"];
+
+    for (let i = 0; i < arr.length + 1; i++) {
+        let digit = arr[i];
+        
+        if (typeof(digit) != "number") {
+            opArr.push(parseFloat(num));
+            num = "";
+            if (validOperators.includes(digit)) {
+                operator = digit;
+                opArr.push(digit);
+            }
+        } else {
+            num += [String(digit)];
+        }
+
+    }
+
+    console.log(opArr);
+}
+
+function getOrderOfOperations(arr) {
+    // takes an operation as array
+    // returns it in correct order of operations
+
+    // by nature, an operation will ALWAYS have one more number than operator
+    // ex. 2 + 2 -- [2 nums, 1 op]   or   3 * 5 + 10 - 4 -- [4 nums, 3 ops]
+}
