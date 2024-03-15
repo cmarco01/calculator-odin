@@ -150,7 +150,7 @@ function testNum(arr) {
 
 }
 
-let arr = [2, 5, "+", 1, 0, "-", 5, "/", 3, "*", 10];
+let arr = [5, "*", 3, "*", 10, "-", 1, "/", 2];
 
 // testNum(arr);
 getOperationArray(arr);
@@ -178,6 +178,7 @@ function getOperationArray(arr) {
         -parseFloat num
         -add num to opArr
         -add operator to opArr
+        -clear num
     */
 
     let opArr = [];
@@ -201,7 +202,12 @@ function getOperationArray(arr) {
 
     }
 
-    console.log(opArr);
+    console.log("operation: " + opArr);
+
+
+    // console.log("Previous Operation (no PEMDAS): " + opArr);
+    // opArr = getOrderOfOperations(opArr);
+    // console.log("Operation w/ PEMDAS: " + opArr);
 }
 
 function getOrderOfOperations(arr) {
@@ -210,4 +216,101 @@ function getOrderOfOperations(arr) {
 
     // by nature, an operation will ALWAYS have one more number than operator
     // ex. 2 + 2 -- [2 nums, 1 op]   or   3 * 5 + 10 - 4 -- [4 nums, 3 ops]
+
+    // if array is [5, "+", 3, "*", 10, "-", 1, "/", 2] (equals 19 w/ order of operations PEMDAS)
+    // we want [3, "*", 10, "/", 2, "+", 5, "-", 1]
+
+    // len of array = 9
+    // operators will always be at ODD indexes (in this case) 1, 3, 5, (len - 2)
+
+    // first, get an array of operators 
+    let operators = [];
+    for (let i = 0; i < arr.length; i++) {
+        if (i % 2 == 1) {
+            operators.push(arr[i]);
+        }
+    }
+
+    // console.log(operators);
+    let i = 1;
+    
+    for (i; i < operators.length; i++) {
+        // console.log(i);
+        let thisOp = operators[i];
+        let prevOp = operators[i-1];
+        // console.log("thisOp: " + thisOp + "\nprevOp: " + prevOp);
+        if (thisOp == "*" || thisOp == "/") {
+            if (prevOp == "+" || prevOp == "-") {
+                operators[i-1] = thisOp;
+                operators[i] = prevOp;
+                i = 0;
+            }
+        }
+
+        // console.log(operators);
+    }
+
+    console.log(operators);
+
+    // okay, now we have ops in correct order
+    /*
+    first, find index operators[0] in arr
+    for first element in NEW OP ARR, add the arr at; index - 1, operators[0], index + 1
+    just for first element!!
+
+    for the next, we need to just find the index of the next operator, and then add that and arr[index+1]
+    */
+    let firstOpIndex = arr.indexOf(operators[0]);
+    // console.log(firstOpIndex); // expecting 3
+
+    let firstNum = arr[firstOpIndex - 1];
+    let secondNum = arr[firstOpIndex + 1];
+    let newArr = [firstNum, operators[0], secondNum];
+    // console.log(newArr); // expecting 3, "*", 10
+
+
+    // filter this out of array, then reverse
+    let sliceOp = arr.slice(0, firstOpIndex-1).reverse();
+
+    for (let i = 0; i < sliceOp.length; i++) {
+        digitIndex = arr.indexOf(sliceOp[i]);
+        arr.splice(digitIndex, 1);
+        arr.push(sliceOp[i]);
+    }
+
+    console.log(arr);
+    console.log("newArr; " + newArr);
+
+    let k = 3;
+    for  (k = 3; k < arr.length; k++) {
+        op = arr[k];
+        num = arr[k+1];
+        newArr.push(op);
+        newArr.push(num);
+        k += 1;
+    }
+    
+    console.log("newArr == > ; " + newArr);
+
+    // for (let i = 1; i < operators.length; i++) {
+    //     opIndex = arr.indexOf(operators[i]);
+    //     num = arr[opIndex + 1];
+    //     console.log(num );
+    //     newArr.push(operators[i]);
+    //     newArr.push(num);
+    // }
+
+    // console.log(newArr);
+
+    return newArr;
+
 }
+
+/* 
+
+taking a break;
+
+good thing was that i got the full operation as it's typed so i can
+
+but even then do i need that? cuz i can display stuff w/o that
+*/
