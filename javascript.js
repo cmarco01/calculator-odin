@@ -1,9 +1,14 @@
 /*
 Next part is to track what was pressed.
 
-Add function to eventlistener that gets what was pressed
+Add eventlistener to each button
+Calls function that gets what was pressed and adds to an array
+Updates operationDisplay (string that concatenates w/ each key pressed)
 
-Add it to string displayMsg
+On the press of =, it calls a different function that...
+    -calls getOperationsArray(arr) w/ the tracked array and gets returned answer
+    -displays answer to answerDisplay
+    -displays full operation to operationDisplay
 
 */
 
@@ -126,16 +131,20 @@ function calcOperation(arr) {
 
     // console.log(arr);
 
+    let opComplete = true;
     for (let i = 0; i < arr.length; i++) {
         if (validOperators.includes(arr[i])) {
+            opComplete = false;
             calcOperation(arr);
             break;
         }
     }
 
-    console.log("answer: " + ans);
-
-    return ans;
+    if (opComplete == true) {
+        console.log("answer: " + ans);
+        return ans;
+    }
+    
 }
 
 function computeOp(firstNum, operator, secondNum) {
