@@ -48,7 +48,8 @@ function createKeys() {
             const btn = document.createElement("button");
             btn.textContent = colToUse[k];
             btn.addEventListener("click", () => {
-                alert("You pressed " + colToUse[k])
+                //alert("You pressed " + colToUse[k])
+                getKeyPressed(colToUse[k])
             });
             keyCol.appendChild(btn);
         }
@@ -57,11 +58,67 @@ function createKeys() {
     }
 }
 
+const opDisplay = document.querySelector("#op-div");
+const answerDisplay = document.querySelector("#answer-div");
+let keyArray = [];
+let opString = "";
+let prevKey = "";
+
+function getKeyPressed(key) {
+    console.log("prevKey: " + prevKey);
+
+    let validOperators = ["+", "-", "/", "*"];
+    let ans = 0;
+    if (key == "_") {
+        return;
+    } else if (key == "Back") {
+        keyArray.pop();
+        opString = opString.slice(0, -2);
+    } else if (key == "CE") {
+        keyArray = [];
+        opString = "";
+    } else if (key == "=") {
+        console.log(keyArray);
+        ans = getOperationArray(keyArray);
+        if (isNaN(ans) == false) {
+            keyArray = [];
+        }
+    } else {
+        if (validOperators.includes(prevKey) && validOperators.includes(key)) {
+            keyArray[(keyArray.length - 1)] = key;
+            opString = opString.slice(0, -2) + key + " ";
+            console.log(keyArray);
+        } else {
+            if (keyArray.length == 0 && validOperators.includes(key)) {
+                keyArray.push(0);
+                keyArray.push(key);
+                opString += 0 + " " + key + " ";
+            } else {
+                keyArray.push(key);
+                opString += key + " ";
+            }
+            
+            
+        }
+        
+    }
+
+    if (opString.length <= 0) {
+        opDisplay.textContent = "operation  =";
+    } else {
+        opDisplay.textContent = opString + " =";
+    }
+
+    answerDisplay.textContent = ans;
+    prevKey = key;
+}
+
+
+
 createKeys();
 
-
 let arr = [5, "+", 3, "*", 1, 0, "-", 1, "+", 2];
-getOperationArray(arr);
+// getOperationArray(arr);
 
 
 function getOperationArray(arr) {
@@ -87,7 +144,15 @@ function getOperationArray(arr) {
     }
 
     console.log("operation: " + opArr);
-    calcOperation(opArr);
+
+    // calling it twice because, for some reason, w/ certain operations like for ex,
+    // 7*7*7, it would return "undefined" the first time, and the 2nd time it would
+    // return the correct number. so just figured i'd call it twice to get around issue
+    let ans = calcOperation(opArr);
+    ans = calcOperation(opArr);
+
+    console.log("answer: " + ans);
+    return ans;
 }
 
 
@@ -141,7 +206,7 @@ function calcOperation(arr) {
     }
 
     if (opComplete == true) {
-        console.log("answer: " + ans);
+        // console.log("answer: " + ans);
         return ans;
     }
     
