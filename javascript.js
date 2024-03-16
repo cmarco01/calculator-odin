@@ -63,12 +63,30 @@ const answerDisplay = document.querySelector("#answer-div");
 let keyArray = [];
 let opString = "";
 let prevKey = "";
+let calcOp = false;
+
+/*
+things to fix
+-handling for if answer is NaN
+-handling for if keyArr operation is NaN
+*/
 
 function getKeyPressed(key) {
-    console.log("prevKey: " + prevKey);
-
+    // console.log("prevKey: " + prevKey);
     let validOperators = ["+", "-", "/", "*"];
     let ans = 0;
+
+    if (calcOp == true) {
+        if (validOperators.includes(key)) {
+            opString = keyArray[0] + " ";
+        } else {
+            opString = "";
+            keyArray = [];
+        }
+        calcOp = false;
+    }
+
+
     if (key == "_") {
         return;
     } else if (key == "Back") {
@@ -77,11 +95,19 @@ function getKeyPressed(key) {
     } else if (key == "CE") {
         keyArray = [];
         opString = "";
+        answerDisplay.textContent = 0;
     } else if (key == "=") {
-        console.log(keyArray);
+        // if key array ends in +, -, *, or /, remove it, then call function
+        if (validOperators.includes(keyArray[(keyArray.length - 1)])) {
+            keyArray.pop();
+            opString = opString.slice(0, -2);
+        }
+
         ans = getOperationArray(keyArray);
-        if (isNaN(ans) == false) {
-            keyArray = [];
+        answerDisplay.textContent = ans;
+         if (isNaN(ans) == false) {
+             keyArray = [ans];
+            calcOp = true;
         }
     } else {
         if (validOperators.includes(prevKey) && validOperators.includes(key)) {
@@ -109,7 +135,7 @@ function getKeyPressed(key) {
         opDisplay.textContent = opString + " =";
     }
 
-    answerDisplay.textContent = ans;
+    
     prevKey = key;
 }
 
