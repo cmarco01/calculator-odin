@@ -30,12 +30,13 @@
 #op-div {
     font-size: 18px;
     font-style: italic;
+    overflow-wrap: break-word;
 }
 
 #answer-div {
-    display: flex;
-    justify-content: end;
     font-size: 36px;
+    overflow-wrap: break-word;
+    text-align: end;
 }
 
 .key-container {

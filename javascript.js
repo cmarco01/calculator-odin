@@ -1,9 +1,13 @@
+/*
+Last thing to do is just update the CSS to make it look pretty!
+*/
+
 
 const keyContainer = document.querySelector("#key-container");
 
 function createKeys() {
     let col1 = [7, 4, 1, 0];
-    let col2 = [8, 5, 2, "."];
+    let col2 = [8, 5, 2, "_"]; // change _ to . if i decide to add decimal support
     let col3 = [9, 6, 3, "_"];
     let col4 = ["CE", "*", "+", "="];
     let col5 = ["Back", "/", "-", "_"];
@@ -49,7 +53,7 @@ let keyArray = [];
 let opString = "";
 let prevKey = "";
 let calcOp = false;
-
+let prevOpArray = [];
 
 function getKeyPressed(key) {
     let validOperators = ["+", "-", "/", "*"];
@@ -59,7 +63,11 @@ function getKeyPressed(key) {
         if (validOperators.includes(key)) {
             opString = keyArray[0] + " ";
         } else {
-            if (key != "=") {
+            if (key == "Back") {
+                keyArray = [];
+                opString = "";
+                answerDisplay.textContent = 0;
+            } else if (key != "=") {
                 opString = "";
                 keyArray = [];
             }
@@ -67,12 +75,17 @@ function getKeyPressed(key) {
         calcOp = false;
     }
 
+    let lastKeyEntry = keyArray[keyArray.length - 1];
 
     if (key == "_" || key == ".") {
         return;
     } else if (key == "Back") {
+        if (validOperators.includes(lastKeyEntry)) {
+            opString = opString.slice(0, -2);
+        } else {
+            opString = opString.slice(0, -1);
+        }
         keyArray.pop();
-        opString = opString.slice(0, -2);
     } else if (key == "CE") {
         keyArray = [];
         opString = "";
@@ -90,14 +103,21 @@ function getKeyPressed(key) {
         }
         let numDecimalsRounded = getNumOfDecimalsRounded(ans);
         answerDisplay.textContent = ans.toFixed(numDecimalsRounded);
-        let tempArray = [ans];
+        prevOpArray = keyArray;
          if (isNaN(ans) == false) {
-            keyArray = tempArray;
+            keyArray = [ans];
             calcOp = true;
         }
     } else {
+        let swapOperators = false;
         // this changes the previous operator to the current one
-        if (validOperators.includes(prevKey) && validOperators.includes(key)) {
+        if (validOperators.includes(key)) {
+            if (validOperators.includes(prevKey) || validOperators.includes(lastKeyEntry)) {
+                swapOperators = true;
+            }
+        }
+        
+        if (swapOperators == true) {
             keyArray[(keyArray.length - 1)] = key;
             opString = opString.slice(0, -2) + key + " ";
             console.log(keyArray);
