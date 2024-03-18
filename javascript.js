@@ -1,18 +1,3 @@
-/*
-Next part is to track what was pressed.
-
-Add eventlistener to each button
-Calls function that gets what was pressed and adds to an array
-Updates operationDisplay (string that concatenates w/ each key pressed)
-
-On the press of =, it calls a different function that...
-    -calls getOperationsArray(arr) w/ the tracked array and gets returned answer
-    -displays answer to answerDisplay
-    -displays full operation to operationDisplay
-
-*/
-
-
 
 const keyContainer = document.querySelector("#key-container");
 
@@ -65,16 +50,8 @@ let opString = "";
 let prevKey = "";
 let calcOp = false;
 
-/*
-NaN after pressing = on 2nd time
-
-things to fix
--handling for if answer is NaN
--handling for if keyArr operation is NaN
-*/
 
 function getKeyPressed(key) {
-    // console.log("prevKey: " + prevKey);
     let validOperators = ["+", "-", "/", "*"];
     let ans = 0;
 
@@ -111,7 +88,8 @@ function getKeyPressed(key) {
         } else {
             ans = getOperationArray(keyArray);
         }
-        answerDisplay.textContent = ans;
+        let numDecimalsRounded = getNumOfDecimalsRounded(ans);
+        answerDisplay.textContent = ans.toFixed(numDecimalsRounded);
         let tempArray = [ans];
          if (isNaN(ans) == false) {
             keyArray = tempArray;
@@ -136,7 +114,36 @@ function getKeyPressed(key) {
                 if (validOperators.includes(key)) {
                     opString = opString + " " + key + " ";
                 } else {
-                    opString += key;
+                    let prevKeyTwoBack = keyArray[(keyArray.length - 3)];
+                    let swapZero = false;
+                    let addSpace = false;
+                    // if the first key is a 0 and then a number is entered, OR the first part
+                    // of a number is 0, then this changes it from a 0 to the new number.
+                    // looks weird to have it look like either A) 06 or B) 5 + 06, so this
+                    // addresses that.            
+                    if (prevKey == 0) {
+                        if (validOperators.includes(prevKeyTwoBack)) {
+                            swapZero = true;
+                            addSpace = true;
+                        }
+
+                        if (keyArray.length == 2) {
+                            swapZero = true;
+                        }
+                    }
+
+                    if (swapZero == true) {
+                        if (addSpace == true) {
+                            opString = opString.slice(0, -2) + " " + key;
+                        } else {
+                            opString = opString.slice(0, -2) + key;
+                        }
+
+                        keyArray.pop();
+                        keyArray[(keyArray.length - 1)] = key;
+                    } else {
+                        opString += key;
+                    }
                 }
             }
             
@@ -271,3 +278,30 @@ function computeOp(firstNum, operator, secondNum) {
     return answer;
 }
 
+function getNumOfDecimalsRounded(ans) {
+    // this function gets the number of decimals from the answer.
+    // if it's more than 3, it rounds to 3 decimal places. 
+    let num = ans + "";
+    let index = 0;
+    for (let i = 0; i < num.length; i++) {
+        if (num[i] == ".") {
+            // console.log("FOUND DECIMAL AT index " + i);
+            index = i + 1; // + 1 cuz we don't wanna include the decimal point
+            break;
+        }
+    }
+
+    let numPreSlice = num;
+    num = num.slice(index);
+
+    let numDecimals = 0;
+    if (numPreSlice.includes(".")) {
+        // console.log("num includes a decimal place! including...");
+        numDecimals = num.length;
+        if (numDecimals > 3) {
+            numDecimals = 3;
+        }
+    }
+
+    return numDecimals;   
+}
