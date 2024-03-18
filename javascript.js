@@ -1,5 +1,13 @@
 /*
 Last thing to do is just update the CSS to make it look pretty!
+
+What I would do differently is have each button operation on the calculator
+have its separate function to return what's needed.
+
+Really the case in general; make specific functions for specific operations.
+That one function is pretty big w/ lots going on. I could def see someone
+getting confused if they had to sift thru it. It's even a lot for me to
+sift thru it! haha. All learning for next time.
 */
 
 
@@ -9,8 +17,8 @@ function createKeys() {
     let col1 = [7, 4, 1, 0];
     let col2 = [8, 5, 2, "_"]; // change _ to . if i decide to add decimal support
     let col3 = [9, 6, 3, "_"];
-    let col4 = ["CE", "*", "+", "="];
-    let col5 = ["Back", "/", "-", "_"];
+    let col4 = ["CE", "*", "+", "_"];
+    let col5 = ["Back", "/", "-", "="];
 
     // creates 5 columns
     for (let i = 0; i < 5; i++) {
@@ -40,12 +48,32 @@ function createKeys() {
                 //alert("You pressed " + colToUse[k])
                 getKeyPressed(colToUse[k])
             });
+
+            btn.style.backgroundColor = colorButtons(colToUse[k]);
             keyCol.appendChild(btn);
         }
 
         keyContainer.appendChild(keyCol);
     }
 }
+
+function colorButtons(key) {
+    let btnColor = "#ffae00"; // yellow
+    let operators = ["*", "/", "+", "-"];
+    if (key == "CE" || key == "Back") {
+        btnColor = "#ff0000"; // red
+    } else if (key == "=") {
+        btnColor = "#00ff0d"; // green
+    } else if (key == "_") {
+        btnColor = "#000000"; // black
+    } else if (operators.includes(key)) {
+        btnColor = "#234ab6";
+    }
+
+    return btnColor;
+}
+
+colorButtons(7);
 
 const opDisplay = document.querySelector("#op-div");
 const answerDisplay = document.querySelector("#answer-div");
