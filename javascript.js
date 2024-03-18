@@ -66,6 +66,8 @@ let prevKey = "";
 let calcOp = false;
 
 /*
+NaN after pressing = on 2nd time
+
 things to fix
 -handling for if answer is NaN
 -handling for if keyArr operation is NaN
@@ -80,14 +82,16 @@ function getKeyPressed(key) {
         if (validOperators.includes(key)) {
             opString = keyArray[0] + " ";
         } else {
-            opString = "";
-            keyArray = [];
+            if (key != "=") {
+                opString = "";
+                keyArray = [];
+            }
         }
         calcOp = false;
     }
 
 
-    if (key == "_") {
+    if (key == "_" || key == ".") {
         return;
     } else if (key == "Back") {
         keyArray.pop();
@@ -102,26 +106,38 @@ function getKeyPressed(key) {
             keyArray.pop();
             opString = opString.slice(0, -2);
         }
-
-        ans = getOperationArray(keyArray);
+        if (keyArray.length == 0) {
+            ans = 0;
+        } else {
+            ans = getOperationArray(keyArray);
+        }
         answerDisplay.textContent = ans;
+        let tempArray = [ans];
          if (isNaN(ans) == false) {
-             keyArray = [ans];
+            keyArray = tempArray;
             calcOp = true;
         }
     } else {
+        // this changes the previous operator to the current one
         if (validOperators.includes(prevKey) && validOperators.includes(key)) {
             keyArray[(keyArray.length - 1)] = key;
             opString = opString.slice(0, -2) + key + " ";
             console.log(keyArray);
         } else {
+            // this initializes op w/ a 0 if first entry is an operator
             if (keyArray.length == 0 && validOperators.includes(key)) {
                 keyArray.push(0);
                 keyArray.push(key);
                 opString += 0 + " " + key + " ";
             } else {
                 keyArray.push(key);
-                opString += key + " ";
+                // this is just for formatting. keeps numbers together w/o spaces, but separates
+                // the operators w/ a space before an after
+                if (validOperators.includes(key)) {
+                    opString = opString + " " + key + " ";
+                } else {
+                    opString += key;
+                }
             }
             
             
@@ -140,11 +156,7 @@ function getKeyPressed(key) {
 }
 
 
-
 createKeys();
-
-let arr = [5, "+", 3, "*", 1, 0, "-", 1, "+", 2];
-// getOperationArray(arr);
 
 
 function getOperationArray(arr) {
@@ -169,8 +181,6 @@ function getOperationArray(arr) {
 
     }
 
-    console.log("operation: " + opArr);
-
     // calling it twice because, for some reason, w/ certain operations like for ex,
     // 7*7*7, it would return "undefined" the first time, and the 2nd time it would
     // return the correct number. so just figured i'd call it twice to get around issue
@@ -190,7 +200,18 @@ function calcOperation(arr) {
 
     let validOperators = ["+", "-", "/", "*"];
 
+    let oneNumber = false;
+
+    if (arr.length == 1) {
+        num1 = arr[0];
+        oneNumber = true;
+    }
+
     for (let i = 0; i < arr.length; i++) {
+        if (oneNumber == true) {
+            break;
+        }
+
         let digit = arr[i];
     
         if (arr.includes("*") || arr.includes("/")) {
@@ -220,8 +241,6 @@ function calcOperation(arr) {
     ans = computeOp(num1, operator, num2);
     arr.splice(index, 0, ans);
 
-    // console.log(arr);
-
     let opComplete = true;
     for (let i = 0; i < arr.length; i++) {
         if (validOperators.includes(arr[i])) {
@@ -232,13 +251,13 @@ function calcOperation(arr) {
     }
 
     if (opComplete == true) {
-        // console.log("answer: " + ans);
         return ans;
     }
     
 }
 
 function computeOp(firstNum, operator, secondNum) {
+    let answer = firstNum;
     if (operator == "+") {
         answer = firstNum + secondNum;
     } else if (operator == "-") {
